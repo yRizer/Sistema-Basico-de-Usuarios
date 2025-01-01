@@ -1,0 +1,20 @@
+{
+    "name": "ryzer/vaga",
+    "version": "11",
+    "description": "Teste para vaga.",
+    "keywords": ["Teste", "Vaga"],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ryzer\\Vaga\\": "src/",
+            "App\\": "src/app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "yRizer",
+            "email": "taynan28112003@gmail.com"
+        }
+    ],
+    "require": {}
+}
