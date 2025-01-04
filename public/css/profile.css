@@ -1,0 +1,148 @@
+.profile-info {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.head-profile {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.img-profile-container {
+    position: relative;
+}
+
+.img-profile {
+    scale: 1;
+    width: 120px;
+    height: 120px;
+    transition: 2s;
+    border-radius: 50%;
+    box-shadow: 0px 6px 4px 0px #0000005e;
+    overflow: hidden;
+    background-size: cover;
+    transform: perspective(600px) rotateY(0deg);
+}
+
+.img-profile:hover {
+    scale: 1.1;
+    /* transform: perspective(600px) rotateY(360deg); */
+}
+
+#profileImg {
+    scale: 1;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    transition: 1s;
+    object-fit: cover;
+}
+
+.update-infos {
+    gap: 5px;
+    width: 70%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-inline: auto;
+
+}
+
+.update-infos input[type="text"] {
+    transition: 0.5s;
+    height: 30px;
+    padding-left: 20px;
+    border-radius: 20px;
+    color: #cbcbcb;
+    outline: auto;
+    background-color: #00000000;
+    border: 2px solid #505050;
+}
+
+.update-infos input[type="text"]:focus-visible {
+    outline: 4px solid #5050505b;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.input-file {
+    margin: 0;
+    z-index: 3;
+    top: -10px;
+    width: 25px;
+    right: -10px;
+    height: 25px;
+    padding: 5px;
+    transition: 0.5s;
+    border-radius: 50%;
+    display: flex;
+    cursor: pointer;
+    position: absolute;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: center;
+    background-color: #ffffff0d;
+    box-shadow: 0px 4px 4px 0px #0000005e;
+}
+
+.input-file:hover {
+    background-color: #ffffff27;
+}
+
+.input-file svg {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    
+}
+.input-file svg path{
+    fill: #ebebeb;
+}
+
+.btn-update {
+    height: 35px;
+    transition: 0.5s;
+    margin-top: 5px;
+    border-radius: 30px;
+    padding-inline: 25px;
+    width: auto;
+    border: none;
+    cursor: pointer;
+    margin-inline: auto;
+    color: #ebebeb;
+    backdrop-filter: blur(30px);
+    background-color: #ffffff0d;
+    box-shadow: 0px 2px 4px 0px #0000005e;
+}
+
+.btn-update:hover {
+    background-color: #ffffff1a;
+    scale: 1.05;
+}
+
+@keyframes ChangeImage {
+    0% {}
+
+    50% {
+        #profileImg {
+            display: none;
+        }
+    }
+
+    100% {
+        transform: perspective(600px) rotateY(360deg);
+
+        #profileImg {
+            display: none;
+        }
+    }
+}

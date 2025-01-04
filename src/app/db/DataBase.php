@@ -24,33 +24,25 @@ class DataBase
      */
     private function execute($sql, $arrayParams)
     {
-        print_r($this->conn);
         $stmt = $this->conn->prepare($sql);
-        // $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
         try {
             foreach ($arrayParams as $key => $value) {
 
                 // Verifica o tipo do valor
                 if (is_int($value)) {
-                    echo "<br>Inteiro";
                     $param = PDO::PARAM_INT;
                 } elseif (is_bool($value)) {
-                    echo "<br>Booleano";
                     $param = PDO::PARAM_BOOL;
                 } elseif (is_null($value)) {
-                    echo "<br>Nulo";
                     $param = PDO::PARAM_NULL;
                 } elseif (is_string($value)) {
-                    echo "<br>String";
                     $param = PDO::PARAM_STR;
                 } else {
-                    echo "<br>Não identificado";
                     $param = FALSE;
                 }
 
                 if ($param) {
-                    echo "<br>Parâmetro: " . $param . " Valor: " . $value;
                     $stmt->bindValue($key + 1, $value, $param);
                 }
             }
@@ -63,7 +55,7 @@ class DataBase
         } finally {
             $stmt = null;
             $this->conn = null;
-            echo "<br>Conexão fechada";
+            // echo "<br>Conexão fechada";
         }
     }
 
@@ -75,7 +67,7 @@ class DataBase
         try {
             $this->conn = new PDO("mysql:host=$this->host;dbname=testevaga", $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "<br>Connected successfully";
+            // echo "<br>Connected successfully";
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
@@ -102,9 +94,9 @@ class DataBase
                 return true;
             } else {
                 if ($this->UserExist($email)) {
-                    echo 'Usuário já cadastrado';
+                    // echo 'Usuário já cadastrado';
                 } else {
-                    echo 'Cadastro inválido';
+                    // echo 'Cadastro inválido';
                 }
 
                 return false;
@@ -139,7 +131,30 @@ class DataBase
         }
 
         $sql = "SELECT * FROM users WHERE email = ? AND senha = ?";
-        $query = $this->execute($sql, [$email, md5($senha)])->fetch(PDO::FETCH_ASSOC);
+        $query = $this->execute($sql, [$email, $senha])->fetch(PDO::FETCH_ASSOC);
         return $query;
     }
+
+    public function SetNewProfileImage($id, $newProfileImagePath)
+    {
+        if ($this->conn == null) {
+            $this->connect();
+        }
+
+        $sql = "UPDATE users SET profile_image = ? WHERE id_user = ?";
+        $query = $this->execute($sql, [$newProfileImagePath, $id]);
+        return $query;
+    }
+
+    public function updateName($id, $newName)
+    {
+        if ($this->conn == null) {
+            $this->connect();
+        }
+
+        $sql = "UPDATE users SET nome = ? WHERE id_user = ?";
+        $query = $this->execute($sql, [$newName, $id]);
+        return $query;
+    }
+
 }
