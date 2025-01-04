@@ -3,9 +3,10 @@ require __DIR__ . '/../vendor/autoload.php';
 session_start();
 
 use App\library\Updates;
+use App\Utilities\Modals;
 
 if (isset($_GET['cadastro'])) {
-    echo 'Cadastro realizado com sucesso';
+    // echo 'Cadastro realizado com sucesso';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,35 +20,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } else {
-        echo 'Login inválido';
+        $HTMLInvalidLogin = Modals::getModal('Login inválido', 'Email ou senha inválidos', 'error');
     }
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main_nav.css">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/modals.css">
     <script src="/js/main.js"></script>
+    <script src="/js/validations.js"></script>
     <title>Document</title>
 </head>
 
 <body>
+
+    <?php
+    include '../src/templates/nav/main_nav.php';
+    ?>
+    <?= $HTMLInvalidLogin ?? '' ?>
     <div class="light-ball"></div>
     <section class="main-field">
         <div class="container">
             <div class="login-container">
                 <h1>Login</h1>
-                <form action="login.php" method="post">
-                    <div class="input-container">
-                        <label for="name">Nome</label>
-                        <input type="text" name="name" id="name">
-                    </div>
+                <form class="login-form" action="login.php" method="post">
 
                     <div class="input-container">
                         <label for="email">Email</label>
@@ -62,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <button class="btn-submit" type="submit">Login</button>
                 </form>
-                <span><a href="/cadastro.php">Não possuo login</a></span>
+                <span><a href="/cadastro.php">Não possuo cadastro</a></span>
             </div>
         </div>
     </section>

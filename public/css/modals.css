@@ -1,0 +1,102 @@
+
+.modal-back-blur {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    display: flex;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    background-color: #00000000;
+}
+
+.modal-container {
+    width: 50%;
+    height: 60%;
+    border-radius: 8px;
+    padding-block: 40px;
+    padding-inline: 30px;
+    position: relative;
+    box-sizing: border-box;
+    background-color: #202020;
+}
+
+.modal {
+    color: #eeeeee;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+
+.modal-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.modal-header h2{
+    margin: 0;
+    padding: 0;
+}
+
+.modal-header .close-modal{
+    top: 0;
+    right: 0;
+    border: 0;
+    cursor: pointer;
+    position: absolute;
+    background-color: #00000000;
+}
+
+.modal-header .close-modal svg {
+    height: 20px;
+}
+
+.modal-header .close-modal svg path {
+    fill: #eeeeee;
+}
+
+.modal-body {
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modal-body p {
+    margin: 0;
+    padding: 0;
+}
+
+.modal-body svg{
+    height: 50px;
+}
+
+.modal-body svg path{
+    fill: #eeeeee;
+}
+
+.modal.error .modal-message {
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+    color: #cd4040;
+}
+
+.modal.error .modal-body svg path{
+    fill: #cd4040;
+}

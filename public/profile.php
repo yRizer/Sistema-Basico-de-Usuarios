@@ -70,7 +70,6 @@ if ($_SESSION['profile_image'] !== 'Profile.jpg') {
 } else {
     $profileImgSrc = '\\images\\defaults\\' . $_SESSION['profile_image'];
 }
-
 ?>
 
 <!DOCTYPE html>

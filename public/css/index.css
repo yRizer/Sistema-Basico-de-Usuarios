@@ -1,3 +1,13 @@
+@font-face {
+    font-family: Hanken_Grotesk;
+    src: url(../fonts/Hanken_Grotesk/HankenGrotesk-VariableFont_wght.ttf);
+}
+
+
+input:is(:-webkit-autofill, :autofill, :-internal-autofill-selected) {
+    background-color: #00000000 !important;
+}
+
 html {
     overflow: hidden;
 }
@@ -11,6 +21,7 @@ body {
     position: relative;
     box-sizing: border-box;
     background-color: #0c0c0c;
+    font-family: Hanken_Grotesk;
 }
 
 .main-field {
