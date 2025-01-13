@@ -5,9 +5,11 @@ session_start();
 use App\library\Updates;
 use App\Utilities\Modals;
 
+$HTMLModal = '';
+
 if (isset($_GET['cadastro'])) {
-    // echo 'Cadastro realizado com sucesso';
-}
+    $HTMLModal = Modals::getModal('Usuário cadastrado com sucesso', '', 'success');
+};
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db = new App\db\DataBase();
@@ -16,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (count($login) > 0) {
             Updates::updateSession($login);
 
-            header('Location: /');
+            header('Location: /?login=true');
             exit;
         }
     } else {
-        $HTMLInvalidLogin = Modals::getModal('Login inválido', 'Email ou senha inválidos', 'error');
+        $HTMLModal = Modals::getModal('Login inválido', 'Email ou senha inválidos', 'error');
     }
 }
 ?>
@@ -36,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/css/modals.css">
     <script src="/js/main.js"></script>
     <script src="/js/validations.js"></script>
-    <title>Document</title>
+    <title>Login</title>
 </head>
 
 <body>
@@ -44,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php
     include '../src/templates/nav/main_nav.php';
     ?>
-    <?= $HTMLInvalidLogin ?? '' ?>
+    <?= $HTMLModal ?? '' ?>
     <div class="light-ball"></div>
     <section class="main-field">
         <div class="container">

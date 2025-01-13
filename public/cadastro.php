@@ -7,17 +7,12 @@ use App\library\Security;
 use App\db\DataBase;
 use App\Utilities\Modals;
 
+$HTMLModal = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isNameValid = Security::checkUsername($_POST['name']);
     $isEmailValid = Security::checkEmail($_POST['email']);
     $isPasswordValid = Security::checkPassword($_POST['password']);
-
-    // echo '<br>Nome válido: ';
-    // echo $isNameValid ? '<strong>true</strong>' : '<strong>false</strong>';
-    // echo '<br>Email válido: ';
-    // echo $isEmailValid ? '<strong>true</strong>' : '<strong>false</strong>';
-    // echo '<br>Senha válida: ';
-    // echo $isPasswordValid ? '<strong>true</strong>' : '<strong>false</strong>';
 
     if ($isNameValid && $isEmailValid && $isPasswordValid) {
         $db = new DataBase();
@@ -27,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $HTMLModal = Modals::getModal('Email Existente','Email já cadastrado, tente eoutro.', 'alert');
         };
     } else {
-        echo 'Cadastro inválido';
+        $HTMLModal = Modals::getModal('Cadastro Invalido','Crendenciais de Cadastro invalido.', 'error');
     }
 }
 
@@ -45,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/validations.js"></script>
     <script src="/js/main.js"></script>
-    <title>Document</title>
+    <title>Cadastro</title>
 </head>
 
 <body>

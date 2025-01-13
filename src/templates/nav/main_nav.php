@@ -3,8 +3,10 @@ if (!isset($isLoged)) {
     $isLoged = isset($_SESSION['nome']) && !empty($_SESSION['nome']);
 }
 
-if (!isset($profileImgSrc) && isset($_SESSION['profile_image'])) {
+if (isset($_SESSION['profile_image']) && $_SESSION['profile_image'] !== 'Profile.jpg') {
     $profileImgSrc = '\\images\\uploadeds\\profiles\\' . $_SESSION['profile_image'];
+} else {
+    $profileImgSrc = '\\images\\defaults\\Profile.jpg';
 }
 ?>
 

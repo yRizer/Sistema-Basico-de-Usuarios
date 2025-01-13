@@ -10,12 +10,22 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param {*} event 
      */
     function updateBallPosition(event) {
-        lightBall.style.left = `${event.pageX - (lightBall.offsetWidth / 2)}px`;
-        lightBall.style.top = `${event.pageY - (lightBall.offsetHeight / 2)}px`;
+        
+        if (event.touches) {
+            newPosX = event.touches[0].clientX - (lightBall.offsetWidth / 2)
+            newPosY = event.touches[0].clientY - (lightBall.offsetHeight / 2)
+        } else {
+            newPosX = event.pageX - (lightBall.offsetWidth / 2)
+            newPosY = event.pageY - (lightBall.offsetHeight / 2)
+        }
+        
+        lightBall.style.left = `${newPosX}px`;
+        lightBall.style.top = `${newPosY}px`;
     }
 
     if (lightBall) {
         window.addEventListener('mousemove', updateBallPosition);
+        window.addEventListener('touchmove', updateBallPosition);
         window.addEventListener('wheel', function (event) {
             updateBallPosition(event);
         });
@@ -30,8 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
             elemPosX = element.offsetLeft;
             elemPosY = element.offsetTop;
 
-            mouseX = event.clientX;
-            mouseY = event.clientY;
+            if (event.touches){
+                mouseX = event.touches[0].clientX;
+                mouseY = event.touches[0].clientY;
+            } else {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            }
 
             angleX = -((mouseY - elemPosY) / 17);
             angleY = -((mouseX - elemPosX) / 17);
@@ -73,4 +88,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('mousemove', angleNavLinks);
+    window.addEventListener('touchmove', angleNavLinks)
 });

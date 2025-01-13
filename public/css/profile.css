@@ -70,6 +70,18 @@
     outline: 4px solid #5050505b;
 }
 
+input[type="text"].is-invalid,
+input[type="password"].is-invalid,
+input[type="email"].is-invalid {
+    border: 2px solid #ff14144f;
+}
+
+input[type="text"].is-valid,
+input[type="password"].is-valid,
+input[type="email"].is-valid {
+    border: 2px solid #14ff144f;
+}
+
 input[type="file"] {
     display: none;
 }
@@ -144,5 +156,12 @@ input[type="file"] {
         #profileImg {
             display: none;
         }
+    }
+}
+
+@media screen and (max-width:500px) {
+    .img-profile {
+        width: 90px;
+        height: 90px;
     }
 }
