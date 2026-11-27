@@ -22,17 +22,19 @@ if (isset($_FILES['file']) && $_FILES['file']['name'] && $_SERVER['REQUEST_METHO
     if (!isset($_SESSION['newProfileImageName']) && $_FILES['file'] || $_FILES['file']['name'] !== $_SESSION['newProfileImageName']) {
         $file = $_FILES['file'];
 
-        if (($file['type'] === 'image/jpeg') && $file['type'] !== 'image/png') {
-            $path = __DIR__ . '\\images\\uploadeds\\profiles\\';
-            $fileResult = Upload::uploadFile($file, $path);
-        } else {
-            $HTMLModal = Modals::getModal('Tipo de arquivo inválido', 'Selecione um arquivo válido (jpg)', 'error');
+        $path = __DIR__ . '/images/uploadeds/profiles/';
+        $fileResult = Upload::uploadFile($file, $path);
+
+        if (!$fileResult) {
+            $HTMLModal = Modals::getModal('Tipo de arquivo inválido', 'Selecione uma imagem JPG ou PNG de até 10 MB', 'error');
         }
 
-        if (isset($fileResult)) {
+        if ($fileResult) {
 
-            if ($_SESSION['profile_image'] !== 'Profile.jpg') {
-                unlink($path . $_SESSION['profile_image']);
+            // basename impede apagar arquivos fora da pasta de fotos
+            $oldImage = basename($_SESSION['profile_image']);
+            if ($oldImage !== 'Profile.jpg' && is_file($path . $oldImage)) {
+                unlink($path . $oldImage);
             }
 
             $db = new DataBase();
@@ -44,14 +46,12 @@ if (isset($_FILES['file']) && $_FILES['file']['name'] && $_SERVER['REQUEST_METHO
                 $_SESSION['newProfileImagePath'] = $fileResult;
                 $_SESSION['newProfileImageName'] = $file['name'];
                 
-                $userInfos = $db->Login($_SESSION['email'], $_SESSION['senha']);
-                
+                $userInfos = $db->getUserById($_SESSION['id_user']);
+
                 Updates::updateSession($userInfos);
             } else {
                 $HTMLModal = Modals::getModal('Erro inesperado', 'Houve um erro inesperado no processo do arquivo', 'error');
             }
-        } else {
-            $HTMLModal = Modals::getModal('Erro inesperado', 'Houve um erro inesperado no processo do arquivo', 'error');
         }
     }
 }
@@ -121,15 +121,15 @@ if ($_SESSION['profile_image'] !== 'Profile.jpg') {
                         </div>
                     </div>
                     <label for="nome">
-                        <h3><?= $_SESSION['nome'] ?></h3>
+                        <h3><?= htmlspecialchars($_SESSION['nome']) ?></h3>
                     </label>
-                    <label for="email">Email: <?= $_SESSION['email'] ?></label>
+                    <label for="email">Email: <?= htmlspecialchars($_SESSION['email']) ?></label>
                 </div>
 
                 <form id="infosProfile" class="update-infos" action="profile.php" method="post" enctype="multipart/form-data">
                     <h4>Editar dados</h4>
                     <label for="name">Nome: </label>
-                    <input id="name" type="text" name="nome" value="<?= $_SESSION['nome'] ?>">
+                    <input id="name" type="text" name="nome" value="<?= htmlspecialchars($_SESSION['nome']) ?>">
                     <button class="btn-update" type="submit" value="Submit">Enviar</button>
                 </form>
             </div>

@@ -13,9 +13,11 @@ if (isset($_GET['cadastro'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $db = new App\db\DataBase();
-    $login = $db->Login($_POST['email'], md5($_POST['senha']));
+    $login = $db->Login($_POST['email'] ?? '', $_POST['senha'] ?? '');
     if ($login) {
         if (count($login) > 0) {
+            // Novo id de sessão no login evita fixação de sessão
+            session_regenerate_id(true);
             Updates::updateSession($login);
 
             header('Location: /?login=true');
