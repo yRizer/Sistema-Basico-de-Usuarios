@@ -5,9 +5,9 @@ Sistema de usuários feito como teste técnico para uma vaga de back-end: cadast
 ## Funcionalidades
 
 - Cadastro com validação de nome, e-mail e senha no servidor e no navegador.
-- Login e logout com sessão PHP.
+- Login e logout com sessão PHP; senhas guardadas com `password_hash` (bcrypt).
 - Página de perfil com edição dos dados.
-- Upload de foto de perfil, apagando a foto antiga do servidor ao trocar.
+- Upload de foto de perfil (JPG ou PNG, tipo validado pelo conteúdo do arquivo), apagando a foto antiga ao trocar.
 - Modais de feedback para sucesso e erro.
 
 ## Stack
@@ -18,8 +18,13 @@ Sistema de usuários feito como teste técnico para uma vaga de back-end: cadast
 
 ## Como rodar
 
-1. Crie um banco MySQL chamado `testevaga` com a tabela `users`.
-2. Ajuste o acesso ao banco em `src/app/db/DataBase.php`.
+1. Crie um banco MySQL chamado `testevaga` com a tabela `users`. A coluna `senha` precisa ser `VARCHAR(255)` para guardar o hash.
+2. Defina o acesso ao banco por variáveis de ambiente (a senha nunca fica no código):
+
+   ```bash
+   export DB_HOST=localhost DB_PORT=3306 DB_NAME=testevaga DB_USER=root DB_PASSWORD=sua_senha
+   ```
+
 3. Gere o autoload e suba o servidor apontando para `public/`:
 
    ```bash

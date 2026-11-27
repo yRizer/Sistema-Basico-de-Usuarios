@@ -1,6 +1,4 @@
 <?php
-echo session_id();
-
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\library\Security;

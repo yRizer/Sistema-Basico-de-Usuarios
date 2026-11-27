@@ -6,8 +6,23 @@ class Upload
 {
     public static function uploadFile($file, $path)
     {
-        $fileType = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = uniqid() . '.' . $fileType;
+        // A extensão vem do conteúdo real do arquivo, nunca do nome enviado,
+        // para impedir o upload de scripts disfarçados de imagem.
+        $allowed = [
+            IMAGETYPE_JPEG => 'jpg',
+            IMAGETYPE_PNG => 'png',
+        ];
+
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            return false;
+        }
+
+        $imageInfo = @getimagesize($file['tmp_name']);
+        if ($imageInfo === false || !isset($allowed[$imageInfo[2]])) {
+            return false;
+        }
+
+        $fileName = bin2hex(random_bytes(16)) . '.' . $allowed[$imageInfo[2]];
         $fileTmp = $file['tmp_name'];
         $fileSize = $file['size'];
         $fileError = $file['error'];

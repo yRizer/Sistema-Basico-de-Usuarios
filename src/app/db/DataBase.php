@@ -10,12 +10,23 @@ class DataBase
 {
     // Add your methods and properties here
 
-    private $host = "localhost";
-    private $port = '3306';
-    private $username = 'root';
-    private $password = 'senha';
+    // Credenciais lidas do ambiente (veja o README). Nunca escreva a senha aqui.
+    private $host;
+    private $port;
+    private $database;
+    private $username;
+    private $password;
 
     private $conn = null;
+
+    public function __construct()
+    {
+        $this->host = getenv('DB_HOST') ?: 'localhost';
+        $this->port = getenv('DB_PORT') ?: '3306';
+        $this->database = getenv('DB_NAME') ?: 'testevaga';
+        $this->username = getenv('DB_USER') ?: 'root';
+        $this->password = getenv('DB_PASSWORD') ?: '';
+    }
 
     /**
      * Executa um código SQL
@@ -51,7 +62,9 @@ class DataBase
             $stmt->execute();
             return $stmt;
         } catch (PDOException $e) {
-            echo "<hr>Erro ao executar o código SQL: " . $e->getMessage();
+            // Loga o erro sem expor detalhes do banco para o usuário
+            error_log('Erro ao executar SQL: ' . $e->getMessage());
+            return false;
         } finally {
             $stmt = null;
             $this->conn = null;
@@ -65,11 +78,11 @@ class DataBase
     public function connect()
     {
         try {
-            $this->conn = new PDO("mysql:host=$this->host;dbname=testevaga", $this->username, $this->password);
+            $this->conn = new PDO("mysql:host=$this->host;port=$this->port;dbname=$this->database;charset=utf8mb4", $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // echo "<br>Connected successfully";
         } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
+            error_log('Falha na conexão com o banco: ' . $e->getMessage());
         }
     }
 
@@ -89,7 +102,7 @@ class DataBase
             if ($isNameValid && $isEmailValid && $isPasswordValid && !$this->UserExist($email)) {
                 $this->connect();
                 $sql = "INSERT INTO users (nome, email, senha) VALUES (?, ?, ?)";
-                $this->execute($sql, [$nome, $email, md5($senha)]);
+                $this->execute($sql, [$nome, $email, password_hash($senha, PASSWORD_DEFAULT)]);
 
                 return true;
             } else {
@@ -102,7 +115,7 @@ class DataBase
                 return false;
             }
         } catch (PDOException $e) {
-            echo "Erro: " . $e->getMessage();
+            error_log('Erro no cadastro: ' . $e->getMessage());
             return false;
         }
     }
@@ -124,15 +137,69 @@ class DataBase
         return count($query) > 0;
     }
 
+    /**
+     * Valida e-mail e senha. Retorna os dados do usuário (sem a senha) ou false.
+     * Contas antigas salvas com md5 são aceitas uma vez e migradas para password_hash.
+     * @param string $email
+     * @param string $senha senha em texto puro, como digitada no formulário
+     */
     public function Login($email, $senha)
     {
         if ($this->conn == null) {
             $this->connect();
         }
 
-        $sql = "SELECT * FROM users WHERE email = ? AND senha = ?";
-        $query = $this->execute($sql, [$email, $senha])->fetch(PDO::FETCH_ASSOC);
-        return $query;
+        $sql = "SELECT * FROM users WHERE email = ?";
+        $stmt = $this->execute($sql, [$email]);
+        $user = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
+
+        if (!$user) {
+            return false;
+        }
+
+        $hash = $user['senha'];
+        $valid = password_verify($senha, $hash);
+
+        // Compatibilidade com senhas antigas em md5
+        if (!$valid && strlen($hash) === 32 && hash_equals($hash, md5($senha))) {
+            $valid = true;
+        }
+
+        if (!$valid) {
+            return false;
+        }
+
+        if (password_needs_rehash($hash, PASSWORD_DEFAULT)) {
+            $this->connect();
+            $this->execute(
+                "UPDATE users SET senha = ? WHERE id_user = ?",
+                [password_hash($senha, PASSWORD_DEFAULT), $user['id_user']]
+            );
+        }
+
+        unset($user['senha']);
+        return $user;
+    }
+
+    /**
+     * Busca os dados do usuário (sem a senha) pelo id
+     * @param int $id
+     */
+    public function getUserById($id)
+    {
+        if ($this->conn == null) {
+            $this->connect();
+        }
+
+        $sql = "SELECT * FROM users WHERE id_user = ?";
+        $stmt = $this->execute($sql, [$id]);
+        $user = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : false;
+
+        if ($user) {
+            unset($user['senha']);
+        }
+
+        return $user;
     }
 
     public function SetNewProfileImage($id, $newProfileImagePath)
