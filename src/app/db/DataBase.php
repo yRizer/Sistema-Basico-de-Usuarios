@@ -13,7 +13,7 @@ class DataBase
     private $host = "localhost";
     private $port = '3306';
     private $username = 'root';
-    private $password = 'tata789741';
+    private $password = 'senha';
 
     private $conn = null;
 
